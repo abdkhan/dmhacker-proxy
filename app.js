@@ -87,7 +87,7 @@ app.get('/site/:b64url', function(req, res) {
                     request.get(urlHost, function (err, response, body) {
                         if (!err && response.statusCode == 200) {
                             var csv = body;
-
+                            console.log(csv);
                         }
                     });
                     /*
