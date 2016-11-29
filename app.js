@@ -44,7 +44,7 @@ app.get('/site/:b64url', function(req, res) {
                     res.status(500).send(err.message);
                 } else {
                     // console.log(response.headers);
-                    console.log(httpHeaders(response));
+                    console.log(httpHeaders(response.headers));
                     var targets = {
                         '<link': 'href',
                         '<script': 'src'
