@@ -89,11 +89,11 @@ app.get('/site/:b64url', function(req, res) {
                         });
                     });
                     */
-                    var targetPath = require('path').join(__dirname, 'public', urlObject.pathname);
-                    var fileName = targetPath.split('/')[targetPath.split('/').length];
+                    // var targetPath = require('path').join(__dirname, 'public', urlObject.pathname);
+                    // var fileName = targetPath.split('/')[targetPath.split('/').length];
                     download(urlHost, './public').on('close', function (err, url, file) {
                         console.log(url + ' has been downloaded.', 'And saved as ' + file);
-                        res.status(200).render('index');
+                        res.status(200).sendFile(require('path').join(__dirname, file));
                     });
                 }
             }).end();
