@@ -79,6 +79,17 @@ app.get('/site/:b64url', function(req, res) {
                         }
                     });
                 } else {
+                    var targetPath = require('path').join(__dirname, 'public', urlObject.pathname);
+                    var fileName = targetPath.split('/')[targetPath.split('/').length];
+                    console.log(urlHost);
+                    console.log(targetPath);
+                    console.log(fileName);
+                    request.get(urlHost, function (err, response, body) {
+                        if (!err && response.statusCode == 200) {
+                            var csv = body;
+
+                        }
+                    });
                     /*
                     var targetPath = 'test.js'; //require('path').join(__dirname, 'public', urlObject.pathname);
                     mkdirp(targetPath, function (err) {
@@ -91,10 +102,6 @@ app.get('/site/:b64url', function(req, res) {
                     */
                     // var targetPath = require('path').join(__dirname, 'public', urlObject.pathname);
                     // var fileName = targetPath.split('/')[targetPath.split('/').length];
-                    download(urlHost, './public').on('close', function (err, url, file) {
-                        console.log(url + ' has been downloaded.', 'And saved as ' + file);
-                        res.status(200).sendFile(require('path').join(__dirname, file));
-                    });
                 }
             }).end();
         } else {
