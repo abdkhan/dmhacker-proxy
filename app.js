@@ -79,7 +79,7 @@ app.get('/site/:b64url', function(req, res) {
                         }
                     });
                 } else {
-                    res.setHeader('Content-Type', contentType);
+                    res.set(req_headers.headers);
                     request(urlLink).pipe(res);
                 }
             }).end();
