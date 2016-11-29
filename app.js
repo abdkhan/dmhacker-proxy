@@ -3,6 +3,7 @@ var urlExists = require('url-exists');
 var request = require('request');
 var http = require('http');
 var httpHeaders = require('http-headers');
+var fs = require('fs');
 
 var app = express();
 
@@ -43,51 +44,44 @@ app.get('/site/:b64url', function(req, res) {
                 method: 'HEAD',
                 host: urlObject.hostname,
                 path: urlObject.pathname
-                // port: urlObject.protocol === 'https:' ? 443 : 80
             }, function (req_headers) {
-                console.log(urlObject.hostname);
-                console.log(urlObject.pathname);
-                console.log(req_headers.headers);
-                console.log(req_headers.body);
-                res.status(200).render('index');
-            }).end();
-            /*
-            request(urlHost, function(err, response, body) {
-                if (err) {
-                    res.status(500).send(err.message);
-                } else {
-                    var contentType = response.headers['content-type'];
-                    if (contentType.includes('html')) {
-                        var targets = {
-                            '<link': 'href',
-                            '<script': 'src'
-                        };
-                        for (var i = 0; i < body.length - 7; i++) {
-                            for (var target in targets) {
-                                var start = i + target.length;
-                                var prefix = body.substring(i, start);
-                                if (prefix === target) {
-                                    var infix = '';
-                                    for (var j = start; j < body.length; j++) {
-                                        var c = body[j];
-                                        if (c === '>') {
-                                            break;
-                                        } else {
-                                            infix += c;
+                var contentType = req_headers.headers['content-type'];
+                if (contentType.includes('html')) {
+                    request(urlHost, function(err, response, body) {
+                        if (err) {
+                            res.status(500).send(err.message);
+                        } else {
+                            var targets = {
+                                '<link': 'href',
+                                '<script': 'src'
+                            };
+                            for (var i = 0; i < body.length - 7; i++) {
+                                for (var target in targets) {
+                                    var start = i + target.length;
+                                    var prefix = body.substring(i, start);
+                                    if (prefix === target) {
+                                        var infix = '';
+                                        for (var j = start; j < body.length; j++) {
+                                            var c = body[j];
+                                            if (c === '>') {
+                                                break;
+                                            } else {
+                                                infix += c;
+                                            }
                                         }
+                                        console.log(infix);
                                     }
-                                    console.log(infix);
                                 }
                             }
+                            res.status(200).send(body);
                         }
-                        res.status(200).send(body);
-                    }
-                    else {
-                        res.status(200).render('index');
-                    }
+                    });
                 }
-            });
-            */
+                else {
+                    request(urlHost).pipe(res);
+                    // res.status(200).render('index');
+                }
+            }).end();
         } else {
             res.status(200).render('index');
         }
