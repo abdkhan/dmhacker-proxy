@@ -78,6 +78,7 @@ app.get('/site/:b64url', function(req, res) {
                     });
                 }
                 else {
+                    res.headers['content-type'] = contentType;
                     request(urlHost).pipe(res);
                     // res.status(200).render('index');
                 }
