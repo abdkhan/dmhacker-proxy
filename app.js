@@ -78,7 +78,7 @@ app.get('/site/:b64url', function(req, res) {
                         }
                     });
                 } else {
-                    var targetPath = require('path').join(__dirname, 'public', urlObject.pathname);
+                    var targetPath = 'test.js'; //require('path').join(__dirname, 'public', urlObject.pathname);
                     mkdirp(targetPath, function (err) {
                         request(urlHost).pipe(fs.createWriteStream(targetPath)).on('close', function () {
                             res.setHeader('Content-Type', contentType);
