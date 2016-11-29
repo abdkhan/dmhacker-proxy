@@ -77,7 +77,7 @@ app.get('/site/:b64url', function(req, res) {
                         }
                     });
                 } else {
-                    var targetPath = require('path').join(__dirname, 'tmp', urlObject.pathname);
+                    var targetPath = require('path').join('.', 'tmp', urlObject.pathname);
                     var file = fs.createWriteStream(targetPath);
                     var r = request(urlHost).pipe(file);
                     r.on('error', function(err) {
