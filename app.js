@@ -77,16 +77,8 @@ app.get('/site/:b64url', function(req, res) {
                         }
                     });
                 } else {
-                    var targetPath = require('path').join('.', 'tmp', urlObject.pathname);
-                    var file = fs.createWriteStream(targetPath);
-                    var r = request(urlHost).pipe(file);
-                    r.on('error', function(err) {
-                        file.end();
-                        res.status(500).send(err.message);
-                    });
-                    r.on('finish', function() {
-                        console.log(targetPath);
-                        file.end();
+                    var targetPath = require('path').join(__dirname, 'tmp', urlObject.pathname);
+                    request(urlHost).pipe(fs.createWriteStream(targetPath)).on('close', function () {
                         res.setHeader('Content-Type', contentType);
                         // fs.createReadStream(targetPath).pipe(res);
                         res.status(200).sendFile(targetPath);
