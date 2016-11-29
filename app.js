@@ -40,11 +40,13 @@ app.get('/site/:b64url', function(req, res) {
             var urlObject = require('url').parse(rawUrl);
             var urlHost = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.host;
             http.request({
-                method: 'GET',
+                method: 'HEAD',
                 host: urlObject.hostname,
                 path: urlObject.pathname,
                 port: urlObject.protocol === 'https:' ? 443 : 80
             }, function (req_headers) {
+                console.log(urlObject.hostname);
+                console.log(urlObject.pathname);
                 console.log(req_headers.headers);
                 console.log(req_headers.body);
                 res.status(200).render('index');
