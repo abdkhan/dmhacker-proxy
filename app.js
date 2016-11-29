@@ -77,7 +77,7 @@ app.get('/site/:b64url', function(req, res) {
                                                 }
                                             }
                                             // console.log(body.substring(quote_start, quote_end));
-                                            console.log(body.substring(i, quote_end));
+                                            console.log(i+" "+quote_end);
                                         }
                                     }
                                 }
