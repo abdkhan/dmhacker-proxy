@@ -58,6 +58,9 @@ app.get('/site/:b64url', function(req, res) {
                             for (var i = 0; i < body.length; i++) {
                                 var found = false;
                                 for (var target in targets) {
+                                    if (found) {
+                                        break;
+                                    }
                                     var j = i + target.length;
                                     if (j < body.length) {
                                         var prefix = body.substring(i, j);
@@ -77,6 +80,7 @@ app.get('/site/:b64url', function(req, res) {
                                                 }
                                             }
                                             // console.log(body.substring(quote_start, quote_end));
+                                            console.log(prefix);
                                             console.log(i+" "+quote_end);
                                             console.log(body[j]);
                                         }
