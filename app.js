@@ -78,11 +78,15 @@ app.get('/site/:b64url', function(req, res) {
                     });
                 }
                 else {
-                    res.setHeader('Content-type', contentType);
-                    http.get(urlHost, function(res_file) {
-                        console.log(res_file);
-                        res_file.pipe(res);
+                    var targetPath = require('path').join(__dirname, 'public', 'tmp', req.params.b64url);
+                    var r = request(url).pipe(fs.createWriteStream(targetPath));
+                    r.on('error', function(err) {
+                        res.status(500).send(err.message);
                     });
+                    r.on('finish', function() {
+                        res.status(200).sendFile(targetPath);
+                    });
+
                 }
             }).end();
         } else {
