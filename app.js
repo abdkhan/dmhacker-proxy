@@ -5,6 +5,7 @@ var http = require('http');
 var httpHeaders = require('http-headers');
 var fs = require('fs');
 var mkdirp = require('mkdirp');
+var download = require('url-download');
 
 var app = express();
 
@@ -78,6 +79,7 @@ app.get('/site/:b64url', function(req, res) {
                         }
                     });
                 } else {
+                    /*
                     var targetPath = 'test.js'; //require('path').join(__dirname, 'public', urlObject.pathname);
                     mkdirp(targetPath, function (err) {
                         request(urlHost).pipe(fs.createWriteStream(targetPath)).on('close', function () {
@@ -86,7 +88,13 @@ app.get('/site/:b64url', function(req, res) {
                             res.status(200).sendFile(targetPath);
                         });
                     });
-
+                    */
+                    var targetPath = require('path').join(__dirname, 'public', urlObject.pathname);
+                    var fileName = targetPath.split('/')[targetPath.split('/').length];
+                    download(urlHost, './public').on('close', function (err, url, file) {
+                        console.log(url + ' has been downloaded.', 'And saved as ' + file);
+                        res.status(200).render('index');
+                    });
                 }
             }).end();
         } else {

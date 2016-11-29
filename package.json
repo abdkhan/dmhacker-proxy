@@ -15,7 +15,8 @@
         "url-exists": "1.0.3",
         "request": "2.79.0",
         "http-headers": "3.0.1",
-        "mkdirp": "0.5.1"
+        "mkdirp": "0.5.1",
+        "url-download": "0.0.8"
     },
     "repository": {
         "type": "git",
