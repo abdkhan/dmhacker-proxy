@@ -80,6 +80,7 @@ app.get('/site/:b64url', function(req, res) {
                 else {
                     res.setHeader('Content-type', contentType);
                     http.get(urlHost, function(res_file) {
+                        console.log(res_file);
                         res_file.pipe(res);
                     });
                 }
