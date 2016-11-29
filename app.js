@@ -57,7 +57,8 @@ app.get('/site/:b64url', function(req, res) {
                             var targets = ['href=', 'src='];
                             for (var i = 0; i < body.length; i++) {
                                 var found = false;
-                                for (var target in targets) {
+                                for (var index in targets) {
+                                    var target = targets[index];
                                     if (found) {
                                         break;
                                     }
@@ -80,8 +81,7 @@ app.get('/site/:b64url', function(req, res) {
                                                     }
                                                 }
                                             }
-                                            console.log(i+" "+quote_end);
-                                            console.log(body[j]);
+                                            console.log(body.substring(i, quote_end));
                                         }
                                     }
                                 }
