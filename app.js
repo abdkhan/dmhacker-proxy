@@ -4,6 +4,7 @@ var request = require('request');
 var http = require('http');
 var httpHeaders = require('http-headers');
 var fs = require('fs');
+var mkdirp = require('mkdirp');
 
 var app = express();
 
@@ -77,11 +78,13 @@ app.get('/site/:b64url', function(req, res) {
                         }
                     });
                 } else {
-                    var targetPath = require('path').join(__dirname, 'tmp', urlObject.pathname);
-                    request(urlHost).pipe(fs.createWriteStream(targetPath)).on('close', function () {
-                        res.setHeader('Content-Type', contentType);
-                        // fs.createReadStream(targetPath).pipe(res);
-                        res.status(200).sendFile(targetPath);
+                    var targetPath = require('path').join(__dirname, 'public', urlObject.pathname);
+                    mkdirp(targetPath, function (err) {
+                        request(urlHost).pipe(fs.createWriteStream(targetPath)).on('close', function () {
+                            res.setHeader('Content-Type', contentType);
+                            // fs.createReadStream(targetPath).pipe(res);
+                            res.status(200).sendFile(targetPath);
+                        });
                     });
 
                 }
