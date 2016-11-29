@@ -17,12 +17,12 @@ app.get('/', function(request, response) {
     response.render('index');
 });
 
-app.get('/exists/:b64url', function (req, res) {
+app.get('/exists/:b64url', function(req, res) {
     var rawUrl = new Buffer(req.params.b64url, 'base64').toString('ascii');
     if (!rawUrl.startsWith('http://') && !rawUrl.startsWith('https://')) {
         rawUrl = 'http://' + rawUrl;
     }
-    urlExists(rawUrl, function (err, exists) {
+    urlExists(rawUrl, function(err, exists) {
         res.status(200).json({
             exists: exists
         });
@@ -39,45 +39,36 @@ app.get('/site/:b64url', function(req, res) {
         if (exists) {
             var urlObject = require('url').parse(rawUrl);
             var urlHost = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.host;
-            http.request({
-                method: 'HEAD',
-                host: urlObject.host,
-                port: 80,
-                path: '/'
-            }, function (req_headers) {
-                console.log(httpHeaders(req_headers));
-                request(urlHost, function (err, response, body) {
-                    if (err) {
-                        res.status(500).send(err.message);
-                    }
-                    else {
-                        console.log(response.headers);
-                        var targets = {
-                            '<link' : 'href',
-                            '<script': 'src'
-                        }
-                        for (var i = 0; i < body.length - 7; i++) {
-                            for (var target in targets) {
-                                var start = i + target.length;
-                                var prefix = body.substring(i, start);
-                                if (prefix === target) {
-                                    var infix = '';
-                                    for (var j = start; j < body.length; j++) {
-                                        var c = body[j];
-                                        if (c === '>') {
-                                            break;
-                                        }
-                                        else {
-                                            infix += c;
-                                        }
+            request(urlHost, function(err, response, body) {
+                if (err) {
+                    res.status(500).send(err.message);
+                } else {
+                    // console.log(response.headers);
+                    console.log(httpHeaders(response));
+                    var targets = {
+                        '<link': 'href',
+                        '<script': 'src'
+                    };
+                    for (var i = 0; i < body.length - 7; i++) {
+                        for (var target in targets) {
+                            var start = i + target.length;
+                            var prefix = body.substring(i, start);
+                            if (prefix === target) {
+                                var infix = '';
+                                for (var j = start; j < body.length; j++) {
+                                    var c = body[j];
+                                    if (c === '>') {
+                                        break;
+                                    } else {
+                                        infix += c;
                                     }
-                                    console.log(infix);
                                 }
+                                console.log(infix);
                             }
                         }
-                        res.status(200).send(body);
                     }
-                });
+                    res.status(200).send(body);
+                }
             });
         } else {
             res.status(200).render('index');
