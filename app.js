@@ -1,6 +1,7 @@
 var express = require('express');
 var proxy = require('express-http-proxy');
 var urlExists = require('url-exists');
+var request = require('request');
 
 var app = express();
 
@@ -37,11 +38,22 @@ app.get('/site/:b64url', function(req, res) {
         if (exists) {
             var urlObject = require('url').parse(rawUrl);
             var urlHost = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.host;
+            /*
             proxy(urlHost, {
                 forwardPath: function(req, res) {
                     return urlObject.path;
                 }
             })(req, res);
+            */
+            request(urlHost, function (err, response, body) {
+                if (err) {
+                    res.status(500).send(err.message);
+                }
+                else {
+                    console.log(response);
+                    console.log(body);
+                }
+            });
         } else {
             res.render('index');
         }
