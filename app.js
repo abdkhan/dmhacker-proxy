@@ -45,7 +45,8 @@ app.get('/site/:b64url', function(req, res) {
                 path: '/',
                 port: urlObject.protocol === 'https' ? 443 : 80
             }, function (req_headers) {
-                console.log(req_headers);
+                console.log(req_headers.headers);
+                console.log(req_headers.body);
                 res.status(200).render('index');
             }).end();
             /*
