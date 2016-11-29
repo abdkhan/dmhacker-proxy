@@ -39,12 +39,21 @@ app.get('/site/:b64url', function(req, res) {
         if (exists) {
             var urlObject = require('url').parse(rawUrl);
             var urlHost = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.host;
+            http.request({
+                method: 'HEAD',
+                host: urlObject.host,
+                path: '/',
+                port: urlObject.protocol === 'https' ? 443 : 80
+            }, function (req_headers) {
+                console.log(req_headers);
+                res.status(200).render('index');
+            }).end();
+            /*
             request(urlHost, function(err, response, body) {
                 if (err) {
                     res.status(500).send(err.message);
                 } else {
                     var contentType = response.headers['content-type'];
-                    console.log(contentType);
                     if (contentType.includes('html')) {
                         var targets = {
                             '<link': 'href',
@@ -75,6 +84,7 @@ app.get('/site/:b64url', function(req, res) {
                     }
                 }
             });
+            */
         } else {
             res.status(200).render('index');
         }
