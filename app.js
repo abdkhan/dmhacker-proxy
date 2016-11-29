@@ -79,7 +79,8 @@ app.get('/site/:b64url', function(req, res) {
                 }
                 else {
                     var targetPath = require('path').join(__dirname, 'public', 'tmp', req.params.b64url);
-                    var r = request(url).pipe(fs.createWriteStream(targetPath));
+                    console.log(targetPath);
+                    var r = request(urlHost).pipe(fs.createWriteStream(targetPath));
                     r.on('error', function(err) {
                         res.status(500).send(err.message);
                     });
