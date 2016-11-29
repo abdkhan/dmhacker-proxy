@@ -53,29 +53,38 @@ app.get('/site/:b64url', function(req, res) {
                         if (err) {
                             res.status(500).send(err.message);
                         } else {
-                            var targets = {
-                                '<link': 'href',
-                                '<script': 'src'
-                            };
-                            for (var i = 0; i < body.length - 7; i++) {
+                            var rebuilt = '';
+                            var targets = ['href=', 'src='];
+                            for (var i = 0; i < body.length; i++) {
+                                var found = false;
                                 for (var target in targets) {
-                                    var start = i + target.length;
-                                    var prefix = body.substring(i, start);
-                                    if (prefix === target) {
-                                        var infix = '';
-                                        for (var j = start; j < body.length; j++) {
-                                            var c = body[j];
-                                            if (c === '>') {
-                                                break;
-                                            } else {
-                                                infix += c;
+                                    var j = i + target.length;
+                                    if (j < body.length) {
+                                        var prefix = body.substring(i, j);
+                                        if (prefix === target) {
+                                            found = true;
+                                            var quote_start = -1;
+                                            var quote_end = -1;
+                                            for (var c = j; c < body.length; c++) {
+                                                if (body[c] === '"') {
+                                                    if (quote_start === -1) {
+                                                        quote_start = c;
+                                                    }
+                                                    else if (quote_end === -1) {
+                                                        quote_end = c;
+                                                        break;
+                                                    }
+                                                }
                                             }
+                                            console.log(body.substring(quote_start, quote_end));
                                         }
-                                        console.log(infix);
                                     }
                                 }
+                                if (!found) {
+                                    rebuilt += body[i];
+                                }
                             }
-                            res.status(200).send(body);
+                            res.status(200).send(rebuilt);
                         }
                     });
                 } else {
