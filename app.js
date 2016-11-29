@@ -50,12 +50,11 @@ app.get('/site/:b64url', function(req, res) {
                     res.status(500).send(err.message);
                 }
                 else {
-                    console.log(response);
-                    console.log(body);
+                    res.status(200).send(body);
                 }
             });
         } else {
-            res.render('index');
+            res.status(200).render('index');
         }
     });
 });
