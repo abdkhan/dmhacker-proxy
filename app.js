@@ -87,7 +87,9 @@ app.get('/site/:b64url', function(req, res) {
                     r.on('finish', function() {
                         console.log(targetPath);
                         file.end();
-                        res.status(200).sendFile(targetPath);
+                        res.setHeader('Content-Type', contentType);
+                        fs.createReadStream(targetPath).pipe(res);
+                        // res.status(200).sendFile(targetPath);
                     });
 
                 }
