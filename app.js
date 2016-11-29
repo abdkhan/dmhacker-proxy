@@ -78,7 +78,6 @@ app.get('/site/:b64url', function(req, res) {
                     });
                 } else {
                     var targetPath = require('path').join(__dirname, 'public', 'tmp', guid());
-                    console.log(targetPath);
                     var file = fs.createWriteStream(targetPath);
                     var r = request(urlHost).pipe(file);
                     r.on('error', function(err) {
@@ -86,6 +85,7 @@ app.get('/site/:b64url', function(req, res) {
                         res.status(500).send(err.message);
                     });
                     r.on('finish', function() {
+                        console.log(targetPath);
                         file.end();
                         res.status(200).sendFile(targetPath);
                     });
