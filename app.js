@@ -65,6 +65,7 @@ app.get('/site/:b64url', function(req, res) {
                                     if (j < body.length) {
                                         var prefix = body.substring(i, j);
                                         if (prefix === target) {
+                                            console.log(target+' '+prefix);
                                             found = true;
                                             var quote_start = -1;
                                             var quote_end = -1;
@@ -79,8 +80,6 @@ app.get('/site/:b64url', function(req, res) {
                                                     }
                                                 }
                                             }
-                                            // console.log(body.substring(quote_start, quote_end));
-                                            console.log(prefix);
                                             console.log(i+" "+quote_end);
                                             console.log(body[j]);
                                         }
