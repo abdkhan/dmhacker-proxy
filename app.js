@@ -43,31 +43,36 @@ app.get('/site/:b64url', function(req, res) {
                 if (err) {
                     res.status(500).send(err.message);
                 } else {
-                    console.log(response.headers);
-                    // console.log(httpHeaders(response.headers));
-                    var targets = {
-                        '<link': 'href',
-                        '<script': 'src'
-                    };
-                    for (var i = 0; i < body.length - 7; i++) {
-                        for (var target in targets) {
-                            var start = i + target.length;
-                            var prefix = body.substring(i, start);
-                            if (prefix === target) {
-                                var infix = '';
-                                for (var j = start; j < body.length; j++) {
-                                    var c = body[j];
-                                    if (c === '>') {
-                                        break;
-                                    } else {
-                                        infix += c;
+                    var contentType = response.headers['content-type'];
+                    console.log(contentType);
+                    if (contentType.includes('html')) {
+                        var targets = {
+                            '<link': 'href',
+                            '<script': 'src'
+                        };
+                        for (var i = 0; i < body.length - 7; i++) {
+                            for (var target in targets) {
+                                var start = i + target.length;
+                                var prefix = body.substring(i, start);
+                                if (prefix === target) {
+                                    var infix = '';
+                                    for (var j = start; j < body.length; j++) {
+                                        var c = body[j];
+                                        if (c === '>') {
+                                            break;
+                                        } else {
+                                            infix += c;
+                                        }
                                     }
+                                    console.log(infix);
                                 }
-                                console.log(infix);
                             }
                         }
+                        res.status(200).send(body);
                     }
-                    res.status(200).send(body);
+                    else {
+                        res.status(200).render('index');
+                    }
                 }
             });
         } else {
