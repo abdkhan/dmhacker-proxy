@@ -50,6 +50,29 @@ app.get('/site/:b64url', function(req, res) {
                     res.status(500).send(err.message);
                 }
                 else {
+                    var targets = {
+                        '<link' : 'href',
+                        '<script': 'src'
+                    }
+                    for (var i = 0; i < body.length - 7; i++) {
+                        for (var target in targets) {
+                            var start = i + target.length();
+                            var prefix = body.substring(i, start);
+                            if (prefix === target) {
+                                var infix = '';
+                                for (var j = start; j < body.length; j++) {
+                                    var c = body[j];
+                                    if (c === '>') {
+                                        break;
+                                    }
+                                    else {
+                                        infix += c;
+                                    }
+                                }
+                                console.log(infix);
+                            }
+                        }
+                    }
                     res.status(200).send(body);
                 }
             });
