@@ -56,7 +56,7 @@ app.get('/site/:b64url', function(req, res) {
                     }
                     for (var i = 0; i < body.length - 7; i++) {
                         for (var target in targets) {
-                            var start = i + target.length();
+                            var start = i + target.length;
                             var prefix = body.substring(i, start);
                             if (prefix === target) {
                                 var infix = '';
