@@ -41,7 +41,7 @@ app.get('/site/:b64url', function(req, res) {
     urlExists(rawUrl, function(err, exists) {
         if (exists) {
             var urlObject = require('url').parse(rawUrl);
-            var urlHost = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.host;
+            var urlLink = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname + '/' + urlObject.pathname;
             http.request({
                 method: 'HEAD',
                 host: urlObject.hostname,
@@ -49,7 +49,7 @@ app.get('/site/:b64url', function(req, res) {
             }, function(req_headers) {
                 var contentType = req_headers.headers['content-type'];
                 if (contentType.includes('html')) {
-                    request(urlHost, function(err, response, body) {
+                    request(urlLink, function(err, response, body) {
                         if (err) {
                             res.status(500).send(err.message);
                         } else {
@@ -79,29 +79,8 @@ app.get('/site/:b64url', function(req, res) {
                         }
                     });
                 } else {
-                    var targetPath = require('path').join(__dirname, 'public', urlObject.pathname);
-                    var fileName = targetPath.split('/')[targetPath.split('/').length];
-                    console.log(urlHost);
-                    console.log(targetPath);
-                    console.log(fileName);
-                    request.get(urlHost, function (err, response, body) {
-                        if (!err && response.statusCode == 200) {
-                            var csv = body;
-                            console.log(csv);
-                        }
-                    });
-                    /*
-                    var targetPath = 'test.js'; //require('path').join(__dirname, 'public', urlObject.pathname);
-                    mkdirp(targetPath, function (err) {
-                        request(urlHost).pipe(fs.createWriteStream(targetPath)).on('close', function () {
-                            res.setHeader('Content-Type', contentType);
-                            // fs.createReadStream(targetPath).pipe(res);
-                            res.status(200).sendFile(targetPath);
-                        });
-                    });
-                    */
-                    // var targetPath = require('path').join(__dirname, 'public', urlObject.pathname);
-                    // var fileName = targetPath.split('/')[targetPath.split('/').length];
+                    res.setHeader('Content-Type', contentType);
+                    request(urlLink).pipe(res);
                 }
             }).end();
         } else {
