@@ -44,7 +44,7 @@ app.get('/site/:b64url', function(req, res) {
                 method: 'HEAD',
                 host: urlObject.hostname,
                 path: urlObject.pathname
-            }, function (req_headers) {
+            }, function(req_headers) {
                 var contentType = req_headers.headers['content-type'];
                 if (contentType.includes('html')) {
                     request(urlHost, function(err, response, body) {
@@ -76,15 +76,17 @@ app.get('/site/:b64url', function(req, res) {
                             res.status(200).send(body);
                         }
                     });
-                }
-                else {
-                    var targetPath = require('path').join(__dirname, 'public', 'tmp', req.params.b64url);
+                } else {
+                    var targetPath = require('path').join(__dirname, 'public', 'tmp', guid());
                     console.log(targetPath);
-                    var r = request(urlHost).pipe(fs.createWriteStream(targetPath));
+                    var file = fs.createWriteStream(targetPath);
+                    var r = request(urlHost).pipe(file);
                     r.on('error', function(err) {
+                        file.end();
                         res.status(500).send(err.message);
                     });
                     r.on('finish', function() {
+                        file.end();
                         res.status(200).sendFile(targetPath);
                     });
 
@@ -99,3 +101,13 @@ app.get('/site/:b64url', function(req, res) {
 app.listen(app.get('port'), function() {
     console.log('Node app is running on port', app.get('port'));
 });
+
+function guid() {
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+    }
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+        s4() + '-' + s4() + s4() + s4();
+}
