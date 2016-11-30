@@ -2,10 +2,6 @@ var express = require('express');
 var urlExists = require('url-exists');
 var request = require('request');
 var http = require('http');
-var httpHeaders = require('http-headers');
-var fs = require('fs');
-var mkdirp = require('mkdirp');
-var download = require('url-download');
 
 var app = express();
 
@@ -57,6 +53,7 @@ app.get('/site/:b64url', function(req, res) {
                 }
                 if (contentType !== undefined && contentType.includes('html')) {
                     request(urlLink, function(err, response, body) {
+                        console.log(req_headers.headers);
                         if (err) {
                             res.status(500).send(err.message);
                         } else {

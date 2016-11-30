@@ -13,9 +13,7 @@
         "ejs": "2.4.1",
         "express": "4.13.3",
         "url-exists": "1.0.3",
-        "request": "2.79.0",
-        "http-headers": "3.0.1",
-        "mkdirp": "0.5.1"
+        "request": "2.79.0"
     },
     "repository": {
         "type": "git",
