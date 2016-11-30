@@ -81,7 +81,7 @@ app.get('/site/:b64url', function(req, res) {
                             var eachLink = old_attr.split(',');
                             var doctoredLinks = [];
                             for (var i in eachLink) {
-                                var trimmed = eachLink[i];
+                                var trimmed = eachLink[i].trim();
                                 var sublinks = trimmed.split(' ');
                                 sublinks[0] = transformLink(sublinks[0]);
                                 doctoredLinks.push(sublinks.join(' '));
