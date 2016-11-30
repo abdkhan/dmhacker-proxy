@@ -29,13 +29,12 @@ app.get('/site/:b64url', function(req, res) {
             var contentType = response.headers['content-type'];
             if (contentType.includes('html')) {
                 var $ = cheerio.load(body);
-                var targets = [['link', 'href'], ['a', 'href'], ['script', 'src']];
+                var targets = [['link', 'href'], ['a', 'href'], ['script', 'src'], ['img', 'src']];
                 for (var t in targets) {
                     var target = targets[t];
                     $(target[0]).each(function () {
                         var old_attr = $(this).attr(target[1]);
                         if (old_attr === undefined || old_attr[0] === '#') {
-                            console.log($(this).html()+''+JSON.stringify(target));
                             return;
                         }
                         else if (old_attr[0] === '/') {
@@ -46,52 +45,6 @@ app.get('/site/:b64url', function(req, res) {
                     });
                 }
                 res.status(200).send($.html());
-                /*
-                var rebuilt = '';
-                var targets = ['href=', 'src='];
-                for (var i = 0; i < body.length; i++) {
-                    var found = false;
-                    for (var index in targets) {
-                        var target = targets[index];
-                        if (found) {
-                            break;
-                        }
-                        var j = i + target.length;
-                        if (j < body.length) {
-                            var prefix = body.substring(i, j);
-                            if (prefix === target) {
-                                found = true;
-                                var quote_start = -1;
-                                var quote_end = -1;
-                                for (var c = j; c < body.length; c++) {
-                                    if (body[c] === '"') {
-                                        if (quote_start === -1) {
-                                            quote_start = c;
-                                        } else if (quote_end === -1) {
-                                            quote_end = c;
-                                            break;
-                                        }
-                                    }
-                                }
-                                var inlinedUrl = body.substring(quote_start + 1, quote_end);
-                                if (inlinedUrl[0] === '#') {
-                                    rebuilt += prefix + '"' + inlinedUrl + '"';
-                                    i = quote_end + 1;
-                                } else if (inlinedUrl[0] === '/') {
-                                    inlinedUrl = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname + inlinedUrl;
-                                }
-                                var inlinedUrlB64 = new Buffer(inlinedUrl).toString('base64');
-                                rebuilt += prefix + '"http://dmhacker-proxy.herokuapp.com/site/' + inlinedUrlB64 + '"';
-                                i = quote_end + 1;
-                            }
-                        }
-                    }
-                    if (!found) {
-                        rebuilt += body[i];
-                    }
-                }
-                res.status(200).send(rebuilt);
-                */
             } else {
                 res.set(response.headers);
                 request(urlLink).pipe(res);
