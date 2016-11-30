@@ -72,12 +72,16 @@ app.get('/site/:b64url', function(req, res) {
                                         if (inlinedUrl[0] === '#') {
                                             rebuilt += prefix + '"' + inlinedUrl + '"';
                                             i = quote_end + 1;
-                                            continue;
                                         } else if (inlinedUrl[0] === '/') {
+                                            // Only redirect these for now to save memory
+                                            // Will change when a cache is added
                                             inlinedUrl = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname + inlinedUrl;
-                                            // Technically this is suppose to go outside but to save memory, we will only redirect if we need to
                                             var inlinedUrlB64 = new Buffer(inlinedUrl).toString('base64');
                                             rebuilt += prefix + '"http://dmhacker-proxy.herokuapp.com/site/' + inlinedUrlB64 + '"';
+                                            i = quote_end + 1;
+                                        }
+                                        else {
+                                            rebuilt += prefix + '"' + inlinedUrl + '"'
                                             i = quote_end + 1;
                                         }
                                     }
