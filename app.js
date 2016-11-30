@@ -96,7 +96,7 @@ app.get('/site/:b64url', function(req, res) {
                         }
                         res.status(200).send(rebuilt);
                     } else {
-                        res.set(req_headers.headers);
+                        res.set(response.headers);
                         request(urlLink).pipe(res);
                     }
                 }
