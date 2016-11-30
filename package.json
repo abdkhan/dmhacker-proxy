@@ -13,7 +13,8 @@
         "ejs": "2.4.1",
         "express": "4.13.3",
         "request": "2.79.0",
-        "cheerio": "0.22.0"
+        "cheerio": "0.22.0",
+        "ip": "1.1.4"
     },
     "repository": {
         "type": "git",

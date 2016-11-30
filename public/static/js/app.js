@@ -1,6 +1,16 @@
 var app = angular.module('Proxy', []);
 
-app.controller('ProxyController', function($scope) {
+app.controller('ProxyController', function($scope, $http) {
+
+    $scope.title = 'Bush did 7/11.';
+    $http({
+        method: 'GET',
+        url: '/ip'
+    }).then(function (response) {
+        $scope.title = response.ip;
+    }, function (err) {
+        Materialize.toast('Unable to get server ip', 3000);
+    });
 
     $scope.go = function () {
         var b64url = window.btoa($scope.url);

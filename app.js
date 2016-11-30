@@ -15,6 +15,12 @@ app.get('/', function(request, response) {
     response.render('index');
 });
 
+app.get('/ip', function (req, res) {
+    res.status(200).json({
+        'ip': require('ip').address()
+    });
+});
+
 // Where the magic happens
 app.get('/site/:b64url', function(req, res) {
     var urlLink = new Buffer(req.params.b64url, 'base64').toString('ascii');
