@@ -48,7 +48,7 @@ app.get('/site/:b64url', function(req, res) {
                 path: urlObject.pathname
             }, function(req_headers) {
                 var contentType = req_headers.headers['content-type'];
-                if (contentType.includes('html')) {
+                if (contentType !== undefined && contentType.includes('html')) {
                     request(urlLink, function(err, response, body) {
                         if (err) {
                             res.status(500).send(err.message);
@@ -81,7 +81,12 @@ app.get('/site/:b64url', function(req, res) {
                                                 }
                                             }
                                             var inlinedUrl = body.substring(quote_start + 1, quote_end);
-                                            if (inlinedUrl[0] === '/') {
+                                            if (inlinedUrl[0] === '#') {
+                                                rebuilt += prefix + '"' + inlinedUrl + '"';
+                                                i = quote_end + 1;
+                                                continue;
+                                            }
+                                            else if (inlinedUrl[0] === '/') {
                                                 inlinedUrl = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname + inlinedUrl;
                                             }
                                             var inlinedUrlB64 = new Buffer(inlinedUrl).toString('base64');
