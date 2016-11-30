@@ -35,6 +35,7 @@ app.get('/site/:b64url', function(req, res) {
     }
     urlExists(urlLink, function(err, exists) {
         if (exists) {
+            var urlObject = require('url').parse(urlLink);
             request(urlLink, function(err, response, body) {
                 if (err) {
                     res.status(400).send(err.message);
