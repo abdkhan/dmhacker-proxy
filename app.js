@@ -48,6 +48,13 @@ app.get('/site/:b64url', function(req, res) {
                 path: urlObject.pathname
             }, function(req_headers) {
                 var contentType = req_headers.headers['content-type'];
+                if (contentType === undefined) {
+                    console.log(req_headers);
+                    console.log(req_headers.headers);
+                    console.log(urlLink);
+                    console.log(urlObject.hostname);
+                    console.log(urlObject.pathname);
+                }
                 if (contentType !== undefined && contentType.includes('html')) {
                     request(urlLink, function(err, response, body) {
                         if (err) {
