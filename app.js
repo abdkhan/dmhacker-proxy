@@ -49,6 +49,7 @@ app.get('/site/:b64url', function(req, res) {
                             // We don't know what this is ... could be a link missing the http OR a call to the current directory
                             // Nevertheless, we make our best guess
                             var first_part = old_attr.split('/')[0];
+                            console.log(JSON.stringify(old_attr.split('/')));
                             if (old_attr.substring(0, 2) === '//') {
                                 old_attr = 'http:' + old_attr;
                             }
