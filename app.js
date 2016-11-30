@@ -16,7 +16,7 @@ app.get('/', function(request, response) {
 
 // Where the magic happens
 app.get('/site/:b64url', function(req, res) {
-    var urlLink = new Buffer(req.params.b64url.split('_').join('='), 'base64').toString('ascii');
+    var urlLink = new Buffer(req.params.b64url, 'base64').toString('ascii');
     if (!urlLink.startsWith('http://') && !urlLink.startsWith('https://')) {
         urlLink = 'http://' + urlLink;
     }
@@ -60,7 +60,7 @@ app.get('/site/:b64url', function(req, res) {
                                 } else if (inlinedUrl[0] === '/') {
                                     inlinedUrl = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname + inlinedUrl;
                                 }
-                                var inlinedUrlB64 = new Buffer(inlinedUrl).toString('base64').split('=').join('_');
+                                var inlinedUrlB64 = new Buffer(inlinedUrl).toString('base64');
                                 rebuilt += prefix + '"http://dmhacker-proxy.herokuapp.com/site/' + inlinedUrlB64 + '"';
                                 i = quote_end + 1;
                             }
