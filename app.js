@@ -75,10 +75,11 @@ app.get('/site/:b64url', function(req, res) {
                                             continue;
                                         } else if (inlinedUrl[0] === '/') {
                                             inlinedUrl = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname + inlinedUrl;
+                                            // Technically this is suppose to go outside but to save memory, we will only redirect if we need to
+                                            var inlinedUrlB64 = new Buffer(inlinedUrl).toString('base64');
+                                            rebuilt += prefix + '"http://dmhacker-proxy.herokuapp.com/site/' + inlinedUrlB64 + '"';
+                                            i = quote_end + 1;
                                         }
-                                        var inlinedUrlB64 = new Buffer(inlinedUrl).toString('base64');
-                                        rebuilt += prefix + '"http://dmhacker-proxy.herokuapp.com/site/' + inlinedUrlB64 + '"';
-                                        i = quote_end + 1;
                                     }
                                 }
                             }
