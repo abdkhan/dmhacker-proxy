@@ -6,8 +6,7 @@ app.controller('ProxyController', function($scope, $http) {
         method: 'GET',
         url: '/ip'
     }).then(function(response) {
-        console.log(response);
-        $scope.title = response.ip;
+        $scope.title = response.data.ip;
         if (!$scope.$$phase) {
             $scope.$apply();
         }
