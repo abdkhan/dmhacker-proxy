@@ -36,9 +36,8 @@ app.get('/site/:b64url', function(req, res) {
     urlExists(rawUrl, function(err, exists) {
         if (exists) {
             var urlObject = require('url').parse(rawUrl);
-            var urlLink = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname + '/' + urlObject.pathname;
+            var urlLink = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname + (urlObject.hostname[urlObject.hostname.length - 1] === '/' ? '' : '/') + urlObject.pathname;
             request(urlLink, function(err, response, body) {
-                console.log(response.headers);
                 if (err) {
                     res.status(500).send(err.message);
                 } else {
@@ -49,7 +48,7 @@ app.get('/site/:b64url', function(req, res) {
                         console.log(urlObject.hostname);
                         console.log(urlObject.pathname);
                     }
-                    if (contentType !== undefined && contentType.includes('html')) {
+                    if (contentType.includes('html')) {
                         var rebuilt = '';
                         var targets = ['href=', 'src='];
                         for (var i = 0; i < body.length; i++) {
