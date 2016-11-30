@@ -43,7 +43,8 @@ app.get('/site/:b64url', function(req, res) {
                         else if (old_attr.substring(0, 4) !== 'http') {
                             // We don't know what this is ... could be a link missing the http OR a call to the current directory
                             // Nevertheless, we make our best guess
-                            if (old_attr.includes('.com') || old_attr.includes('.org') || old_attr.includes('.net') || old_attr.includes('.edu')) {
+                            var first_part = old_attr.split('/')[0];
+                            if (first_part.includes('.com') || first_part.includes('.org') || first_part.includes('.net') || first_part.includes('.edu')) {
                                 old_attr = urlObject.protocol + (urlObject.slashes ? '//' : '') + old_attr;
                             }
                             else {
