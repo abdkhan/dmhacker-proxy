@@ -37,8 +37,18 @@ app.get('/site/:b64url', function(req, res) {
                         if (old_attr === undefined || old_attr[0] === '#') {
                             return;
                         }
-                        else if (old_attr[0] === '/' || old_attr.substring(0, 4) !== 'http') {
+                        else if (old_attr[0] === '/') {
                             old_attr = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname + (old_attr[0] === '/' ? '' : '/') + old_attr;
+                        }
+                        else if (old_attr.substring(0, 4) !== 'http') {
+                            // We don't know what this is ... could be a link missing the http OR a call to the current directory
+                            // Nevertheless, we make our best guess
+                            if (old_attr.includes('.com') || old_attr.includes('.org') || old_attr.includes('.net') || old_attr.includes('.edu')) {
+                                old_attr = urlObject.protocol + (urlObject.slashes ? '//' : '') + old_attr;
+                            }
+                            else {
+                                old_attr = urlLink + '/' + old_attr;
+                            }
                         }
                         var old_b64 = new Buffer(old_attr).toString('base64');
                         $(this).attr(target[1], 'http://dmhacker-proxy.herokuapp.com/site/' + old_b64);
