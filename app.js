@@ -29,22 +29,17 @@ app.get('/exists/:b64url', function(req, res) {
 
 // Where the magic happens
 app.get('/site/:b64url', function(req, res) {
-    var rawUrl = new Buffer(req.params.b64url, 'base64').toString('ascii');
-    if (!rawUrl.startsWith('http://') && !rawUrl.startsWith('https://')) {
-        rawUrl = 'http://' + rawUrl;
+    var urlLink = new Buffer(req.params.b64url, 'base64').toString('ascii');
+    if (!urlLink.startsWith('http://') && !urlLink.startsWith('https://')) {
+        urlLink = 'http://' + urlLink;
     }
-    urlExists(rawUrl, function(err, exists) {
+    urlExists(urlLink, function(err, exists) {
         if (exists) {
-            var urlObject = require('url').parse(rawUrl);
-            var urlLink = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname + urlObject.pathname;
             request(urlLink, function(err, response, body) {
                 if (err) {
                     res.status(400).send(err.message);
                 } else {
                     var contentType = response.headers['content-type'];
-                    console.log(rawUrl);
-                    console.log(urlLink);
-                    console.log(contentType);
                     if (contentType.includes('html')) {
                         var rebuilt = '';
                         var targets = ['href=', 'src='];
