@@ -36,12 +36,13 @@ app.get('/site/:b64url', function(req, res) {
     urlExists(rawUrl, function(err, exists) {
         if (exists) {
             var urlObject = require('url').parse(rawUrl);
-            var urlLink = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname + (urlObject.hostname[urlObject.hostname.length - 1] === '/' ? '' : '/') + urlObject.pathname;
+            var urlLink = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname + urlObject.pathname;
             request(urlLink, function(err, response, body) {
                 if (err) {
                     res.status(400).send(err.message);
                 } else {
                     var contentType = response.headers['content-type'];
+                    console.log(rawUrl);
                     console.log(urlLink);
                     console.log(contentType);
                     if (contentType.includes('html')) {
