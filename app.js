@@ -80,7 +80,7 @@ app.get('/site/:b64url', function(req, res) {
                                                     }
                                                 }
                                             }
-                                            var inlinedUrl = body.substring(i + 1, quote_end);
+                                            var inlinedUrl = body.substring(quote_start + 1, quote_end);
                                             if (inlinedUrl[0] === '/') {
                                                 inlinedUrl = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname + inlinedUrl;
                                             }
