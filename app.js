@@ -42,6 +42,7 @@ app.get('/site/:b64url', function(req, res) {
                     res.status(400).send(err.message);
                 } else {
                     var contentType = response.headers['content-type'];
+                    console.log(urlLink);
                     console.log(contentType);
                     if (contentType.includes('html')) {
                         var rebuilt = '';
@@ -90,8 +91,6 @@ app.get('/site/:b64url', function(req, res) {
                         }
                         res.status(200).send(rebuilt);
                     } else {
-                        console.log(response.headers);
-                        console.log(urlLink);
                         res.set(response.headers);
                         request(urlLink).pipe(res);
                     }
