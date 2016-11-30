@@ -38,9 +38,7 @@ app.get('/site/:b64url', function(req, res) {
                     ['link', 'href'],
                     ['a', 'href'],
                     ['script', 'src'],
-                    ['img', 'src'],
-                    ['a', 'data-href-url'],
-                    ['a', 'data-outbound-url']
+                    ['img', 'src']
                 ];
                 for (var t in targets) {
                     var target = targets[t];
