@@ -34,7 +34,8 @@ app.get('/site/:b64url', function(req, res) {
                     var target = targets[t];
                     $(target[0]).each(function () {
                         var old_attr = $(this).attr(target[1]);
-                        if (old_attr[0] === '#') {
+                        if (old_attr === undefined || old_attr[0] === '#') {
+                            console.log($(this).html()+''+JSON.stringify(target));
                             return;
                         }
                         else if (old_attr[0] === '/') {
