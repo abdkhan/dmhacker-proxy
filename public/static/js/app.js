@@ -8,8 +8,10 @@ app.controller('ProxyController', function($scope, $http) {
         url: '/ip'
     }).then(function (response) {
         $scope.title = response.ip;
+        scope.$digest();
     }, function (err) {
         Materialize.toast('Unable to get server ip', 3000);
+        scope.$digest();
     });
 
     $scope.go = function () {
