@@ -19,7 +19,12 @@ app.get('/', function(request, response) {
 app.get('/site/:b64url', function(req, res) {
     var urlLink = new Buffer(req.params.b64url, 'base64').toString('ascii');
     if (!urlLink.startsWith('http://') && !urlLink.startsWith('https://')) {
-        urlLink = 'http://' + urlLink;
+        if (urlLink.startsWith('//')) {
+            urlLink = 'http://' + urlLink.substring(2);
+        }
+        else {
+            urlLink = 'http://' + urlLink;
+        }
     }
     var urlObject = require('url').parse(urlLink);
     request(urlLink, function(err, response, body) {
@@ -44,7 +49,10 @@ app.get('/site/:b64url', function(req, res) {
                             // We don't know what this is ... could be a link missing the http OR a call to the current directory
                             // Nevertheless, we make our best guess
                             var first_part = old_attr.split('/')[0];
-                            if (old_attr.substring(0, 2) === '//' || first_part.includes('.com') || first_part.includes('.org') || first_part.includes('.net') || first_part.includes('.edu')) {
+                            if (old_attr.substring(0, 2) === '//') {
+                                old_attr = 'http:' + old_attr;
+                            }
+                            else if (first_part.includes('.com') || first_part.includes('.org') || first_part.includes('.net') || first_part.includes('.edu')) {
                                 old_attr = urlObject.protocol + (urlObject.slashes ? '//' : '') + old_attr;
                             }
                             else {
