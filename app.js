@@ -34,7 +34,14 @@ app.get('/site/:b64url', function(req, res) {
             var contentType = response.headers['content-type'];
             if (contentType.includes('html')) {
                 var $ = cheerio.load(body);
-                var targets = [['link', 'href'], ['a', 'href'], ['script', 'src'], ['img', 'src']];
+                var targets = [
+                    ['link', 'href'],
+                    ['a', 'href'],
+                    ['script', 'src'],
+                    ['img', 'src'],
+                    ['a', 'data-href-url'],
+                    ['a', 'data-outbound-url']
+                ];
                 for (var t in targets) {
                     var target = targets[t];
                     $(target[0]).each(function () {
