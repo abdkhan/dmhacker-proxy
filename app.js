@@ -88,8 +88,6 @@ app.get('/site/:b64url', function(req, res) {
                                 doctoredLinks.push(sublinks.join(' '));
                             }
                             $(this).attr(target[1], doctoredLinks.join(', '));
-                            console.log('old: '+old_attr);
-                            console.log('new: '+doctoredLinks.join(', '));
                             return;
                         }
                         var new_attr = transformLink(old_attr);
