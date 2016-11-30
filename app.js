@@ -37,8 +37,8 @@ app.get('/site/:b64url', function(req, res) {
                         if (old_attr === undefined || old_attr[0] === '#') {
                             return;
                         }
-                        else if (old_attr[0] === '/') {
-                            old_attr = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname + old_attr;
+                        else if (old_attr[0] === '/' || old_attr.substring(0, 4) !== 'http') {
+                            old_attr = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname + (old_attr[0] === '/' ? '' : '/') + old_attr;
                         }
                         var old_b64 = new Buffer(old_attr).toString('base64');
                         $(this).attr(target[1], 'http://dmhacker-proxy.herokuapp.com/site/' + old_b64);
