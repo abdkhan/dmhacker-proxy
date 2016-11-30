@@ -30,7 +30,6 @@ app.get('/exists/:b64url', function(req, res) {
 // Where the magic happens
 app.get('/site/:b64url', function(req, res) {
     var rawUrl = new Buffer(req.params.b64url, 'base64').toString('ascii');
-    console.log(req.params.b64url);
     if (!rawUrl.startsWith('http://') && !rawUrl.startsWith('https://')) {
         rawUrl = 'http://' + rawUrl;
     }
@@ -40,7 +39,7 @@ app.get('/site/:b64url', function(req, res) {
             var urlLink = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname + (urlObject.hostname[urlObject.hostname.length - 1] === '/' ? '' : '/') + urlObject.pathname;
             request(urlLink, function(err, response, body) {
                 if (err) {
-                    res.status(500).send(err.message);
+                    res.status(400).send(err.message);
                 } else {
                     var contentType = response.headers['content-type'];
                     if (contentType.includes('html')) {
@@ -90,6 +89,7 @@ app.get('/site/:b64url', function(req, res) {
                         }
                         res.status(200).send(rebuilt);
                     } else {
+                        console.log(response.headers);
                         res.set(response.headers);
                         request(urlLink).pipe(res);
                     }
