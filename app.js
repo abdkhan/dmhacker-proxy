@@ -1,7 +1,6 @@
 var express = require('express');
 var urlExists = require('url-exists');
 var request = require('request');
-var http = require('http');
 
 var app = express();
 
@@ -38,79 +37,70 @@ app.get('/site/:b64url', function(req, res) {
         if (exists) {
             var urlObject = require('url').parse(rawUrl);
             var urlLink = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname + '/' + urlObject.pathname;
-            http.request({
-                method: 'HEAD',
-                host: urlObject.hostname,
-                path: urlObject.pathname
-            }, function(req_headers) {
-                var contentType = req_headers.headers['content-type'];
-                if (contentType === undefined) {
-                    console.log(req_headers);
-                    console.log(req_headers.headers);
-                    console.log(urlLink);
-                    console.log(urlObject.hostname);
-                    console.log(urlObject.pathname);
-                }
-                if (contentType !== undefined && contentType.includes('html')) {
-                    request(urlLink, function(err, response, body) {
-                        console.log(req_headers.headers);
-                        if (err) {
-                            res.status(500).send(err.message);
-                        } else {
-                            var rebuilt = '';
-                            var targets = ['href=', 'src='];
-                            for (var i = 0; i < body.length; i++) {
-                                var found = false;
-                                for (var index in targets) {
-                                    var target = targets[index];
-                                    if (found) {
-                                        break;
-                                    }
-                                    var j = i + target.length;
-                                    if (j < body.length) {
-                                        var prefix = body.substring(i, j);
-                                        if (prefix === target) {
-                                            found = true;
-                                            var quote_start = -1;
-                                            var quote_end = -1;
-                                            for (var c = j; c < body.length; c++) {
-                                                if (body[c] === '"') {
-                                                    if (quote_start === -1) {
-                                                        quote_start = c;
-                                                    }
-                                                    else if (quote_end === -1) {
-                                                        quote_end = c;
-                                                        break;
-                                                    }
+            request(urlLink, function(err, response, body) {
+                console.log(response.headers);
+                if (err) {
+                    res.status(500).send(err.message);
+                } else {
+                    var contentType = response.headers['content-type'];
+                    if (contentType === undefined) {
+                        console.log(response.headers);
+                        console.log(urlLink);
+                        console.log(urlObject.hostname);
+                        console.log(urlObject.pathname);
+                    }
+                    if (contentType !== undefined && contentType.includes('html')) {
+                        var rebuilt = '';
+                        var targets = ['href=', 'src='];
+                        for (var i = 0; i < body.length; i++) {
+                            var found = false;
+                            for (var index in targets) {
+                                var target = targets[index];
+                                if (found) {
+                                    break;
+                                }
+                                var j = i + target.length;
+                                if (j < body.length) {
+                                    var prefix = body.substring(i, j);
+                                    if (prefix === target) {
+                                        found = true;
+                                        var quote_start = -1;
+                                        var quote_end = -1;
+                                        for (var c = j; c < body.length; c++) {
+                                            if (body[c] === '"') {
+                                                if (quote_start === -1) {
+                                                    quote_start = c;
+                                                } else if (quote_end === -1) {
+                                                    quote_end = c;
+                                                    break;
                                                 }
                                             }
-                                            var inlinedUrl = body.substring(quote_start + 1, quote_end);
-                                            if (inlinedUrl[0] === '#') {
-                                                rebuilt += prefix + '"' + inlinedUrl + '"';
-                                                i = quote_end + 1;
-                                                continue;
-                                            }
-                                            else if (inlinedUrl[0] === '/') {
-                                                inlinedUrl = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname + inlinedUrl;
-                                            }
-                                            var inlinedUrlB64 = new Buffer(inlinedUrl).toString('base64');
-                                            rebuilt += prefix + '"http://dmhacker-proxy.herokuapp.com/site/' + inlinedUrlB64 + '"';
-                                            i = quote_end + 1;
                                         }
+                                        var inlinedUrl = body.substring(quote_start + 1, quote_end);
+                                        if (inlinedUrl[0] === '#') {
+                                            rebuilt += prefix + '"' + inlinedUrl + '"';
+                                            i = quote_end + 1;
+                                            continue;
+                                        } else if (inlinedUrl[0] === '/') {
+                                            inlinedUrl = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname + inlinedUrl;
+                                        }
+                                        var inlinedUrlB64 = new Buffer(inlinedUrl).toString('base64');
+                                        rebuilt += prefix + '"http://dmhacker-proxy.herokuapp.com/site/' + inlinedUrlB64 + '"';
+                                        i = quote_end + 1;
                                     }
                                 }
-                                if (!found) {
-                                    rebuilt += body[i];
-                                }
                             }
-                            res.status(200).send(rebuilt);
+                            if (!found) {
+                                rebuilt += body[i];
+                            }
                         }
-                    });
-                } else {
-                    res.set(req_headers.headers);
-                    request(urlLink).pipe(res);
+                        res.status(200).send(rebuilt);
+                    } else {
+                        res.set(req_headers.headers);
+                        request(urlLink).pipe(res);
+                    }
                 }
-            }).end();
+            });
         } else {
             res.status(200).render('index');
         }
