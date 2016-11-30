@@ -74,6 +74,9 @@ app.get('/site/:b64url', function(req, res) {
                     var target = targets[t];
                     $(target[0]).each(function () {
                         var old_attr = $(this).attr(target[1]);
+                        if (old_attr === undefined) {
+                            return;
+                        }
                         if (target[1] === 'srcset') {
                             var eachLink = old_attr.split(',');
                             var doctoredLinks = [];
@@ -87,9 +90,7 @@ app.get('/site/:b64url', function(req, res) {
                             return;
                         }
                         var new_attr = transformLink(old_attr);
-                        if (new_attr !== undefined) {
-                            $(this).attr(target[1], new_attr);
-                        }
+                        $(this).attr(target[1], new_attr);
                     });
                 }
                 res.status(200).send($.html());
