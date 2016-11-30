@@ -39,7 +39,8 @@ app.get('/site/:b64url', function(req, res) {
                     ['a', 'href'],
                     ['script', 'src'],
                     ['img', 'src'],
-                    ['img', 'srcset']
+                    ['img', 'srcset'],
+                    ['form', 'action']
                 ];
 
                 var transformLink = function(old_attr) {
