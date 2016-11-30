@@ -16,8 +16,10 @@ app.get('/', function(request, response) {
 });
 
 app.get('/ip', function (req, res) {
-    res.status(200).json({
-        'ip': require('ip').address()
+    require('public-ip').v4().then(function (address) {
+        res.status(200).json({
+            ip: address
+        });
     });
 });
 
