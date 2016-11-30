@@ -1,5 +1,6 @@
 var express = require('express');
 var request = require('request');
+var cheerio = require('cheerio');
 
 var app = express();
 
@@ -27,6 +28,24 @@ app.get('/site/:b64url', function(req, res) {
         } else {
             var contentType = response.headers['content-type'];
             if (contentType.includes('html')) {
+                var $ = cheerio.load(body);
+                var targets = [['link', 'href'], ['a', 'href'], ['script', 'src']];
+                for (var t in targets) {
+                    var target = targets[t];
+                    $(target[0]).each(function () {
+                        var old_attr = $(this).attr(target[1]);
+                        if (old_attr[0] === '#') {
+                            return;
+                        }
+                        else if (old_attr[0] === '/') {
+                            old_attr = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname + old_attr;
+                        }
+                        var old_b64 = new Buffer(old_attr).toString('base64');
+                        $(this).attr(target[1], 'http://dmhacker-proxy.herokuapp.com/site/' + old_b64);
+                    });
+                }
+                res.status(200).send($.html());
+                /*
                 var rebuilt = '';
                 var targets = ['href=', 'src='];
                 for (var i = 0; i < body.length; i++) {
@@ -71,6 +90,7 @@ app.get('/site/:b64url', function(req, res) {
                     }
                 }
                 res.status(200).send(rebuilt);
+                */
             } else {
                 res.set(response.headers);
                 request(urlLink).pipe(res);

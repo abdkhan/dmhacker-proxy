@@ -12,7 +12,8 @@
     "dependencies": {
         "ejs": "2.4.1",
         "express": "4.13.3",
-        "request": "2.79.0"
+        "request": "2.79.0",
+        "cheerio": "0.22.0"
     },
     "repository": {
         "type": "git",
