@@ -129,19 +129,23 @@ app.get('/site/*', function(req, res) {
                             }
                             else if (typeof v === 'string') {
                                 if (v.trim().startsWith('url(')) {
-                                    console.log(v);
-                                    var extracted = v.substring('url('.length, v.length - ')'.length);
-                                    var quotes = '';
-                                    if (extracted[0] === '"' || extracted[0] === "'") {
-                                        quotes = extracted[0];
-                                        extracted = extracted.substring(1, extracted.length - 1);
-                                    }
-                                    if (!extracted.startsWith('data:')) {
-                                        level[k] = 'url(' + quotes + transformLink(extracted) + quotes + ')';
-                                        console.log(level[k]);
-                                    }
-                                    else {
-                                        console.log('no url parsing');
+                                    var start = v.indexOf('url(');
+                                    if (start !== -1) {
+                                        var end = start;
+                                        for (; end < v.length; end++) {
+                                            if (v[end] === ')')
+                                                break;
+                                        }
+                                        // Content inside the url(...)
+                                        var extracted = v.substring(start + 'url('.length, end);
+                                        var quotes = '';
+                                        if (extracted[0] === '"' || extracted[0] === "'") {
+                                            quotes = extracted[0];
+                                            extracted = extracted.substring(1, extracted.length - 1);
+                                        }
+                                        if (!extracted.startsWith('data:')) {
+                                            level[k] = v.substring(0, start) + 'url(' + quotes + transformLink(extracted) + quotes + ')' + v.substring(end + 1);
+                                        }
                                     }
                                 }
                             }
