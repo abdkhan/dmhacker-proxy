@@ -109,7 +109,6 @@ app.get('/site/*', function(req, res) {
                     });
                 }
                 res.status(200).send($.html());
-            /*
             } else if (contentType.includes('css')) {
                 res.setHeader('content-type', 'text/css');
 
@@ -130,6 +129,7 @@ app.get('/site/*', function(req, res) {
                             }
                             else if (typeof v === 'string') {
                                 if (v.trim().startsWith('url(')) {
+                                    console.log(v);
                                     var extracted = v.substring('url('.length, v.length - ')'.length);
                                     var quotes = '';
                                     if (extracted[0] === '"' || extracted[0] === "'") {
@@ -137,6 +137,7 @@ app.get('/site/*', function(req, res) {
                                         extracted = extracted.substring(1, extracted.length - 1);
                                     }
                                     level[k] = 'url(' + quotes + transformLink(extracted) + quotes + ')';
+                                    console.log(level[k]);
                                 }
                             }
                         }
@@ -146,7 +147,6 @@ app.get('/site/*', function(req, res) {
                 recurse(ast);
 
                 res.status(200).send(css.stringify(ast).code);
-            */
             } else {
                 res.set(response.headers);
 
