@@ -73,6 +73,7 @@ app.get('/site/*', function(req, res) {
         if (err) {
             res.status(400).send(err.message);
         } else {
+            res.set(response.headers);
             var contentType = response.headers['content-type'];
             if (contentType.includes('html')) {
                 var $ = cheerio.load(body);
@@ -110,8 +111,6 @@ app.get('/site/*', function(req, res) {
                 }
                 res.status(200).send($.html());
             } else if (contentType.includes('css')) {
-                res.setHeader('content-type', 'text/css');
-
                 var ast = css.parse(body, {
                     silent: false
                 });
@@ -157,8 +156,6 @@ app.get('/site/*', function(req, res) {
 
                 res.status(200).send(css.stringify(ast));
             } else {
-                res.set(response.headers);
-
                 request({
                     url: urlLink,
                     headers: {
