@@ -45,7 +45,7 @@ app.get('/site/*', function(req, res) {
 
         var transformLink = function(old_attr) {
             old_attr = old_attr === undefined ? undefined : old_attr.trim();
-            if (old_attr === undefined || old_attr[0] === '#' || old_attr.substring(0, 6) === 'data:') {
+            if (old_attr === undefined || old_attr[0] === '#') {
                 return old_attr;
             }
             else if (old_attr[0] === '/') {
@@ -136,8 +136,13 @@ app.get('/site/*', function(req, res) {
                                         quotes = extracted[0];
                                         extracted = extracted.substring(1, extracted.length - 1);
                                     }
-                                    level[k] = 'url(' + quotes + transformLink(extracted) + quotes + ')';
-                                    console.log(level[k]);
+                                    if (!extracted.startsWith('data:')) {
+                                        level[k] = 'url(' + quotes + transformLink(extracted) + quotes + ')';
+                                        console.log(level[k]);
+                                    }
+                                    else {
+                                        console.log('no url parsing');
+                                    }
                                 }
                             }
                         }
