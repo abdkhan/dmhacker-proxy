@@ -94,7 +94,7 @@ app.get('/site/*', function(req, res) {
             res.status(400).send(err.message);
         } else {
             var contentType = response.headers['content-type'];
-            if (contentType.includes('html')) {
+            if (contentType !== undefined && contentType.includes('html')) {
                 var $ = cheerio.load(body);
                 var targets = [
                     ['link', 'href'],
@@ -133,7 +133,7 @@ app.get('/site/*', function(req, res) {
 
                 res.status(200).send($.html());
             /*
-            } else if (contentType.includes('css')) {
+            } else if (contentType !== undefined && contentType.includes('css')) {
                 res.setHeader('Content-type', 'text/css');
 
                 var ast = css.parse(body, {
