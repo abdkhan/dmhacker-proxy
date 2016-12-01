@@ -52,8 +52,8 @@ app.get('/site/*', function(req, res) {
                     ['a', 'href'],
                     ['script', 'src'],
                     ['img', 'src'],
-                    ['img', 'srcset'],
-                    ['form', 'action']
+                    ['img', 'srcset']
+                    // ['form', 'action'] <-- No support for forms yet
                 ];
 
                 var transformLink = function(old_attr) {
