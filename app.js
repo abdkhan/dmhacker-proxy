@@ -67,8 +67,6 @@ app.get('/site/*', function(req, res) {
                     old_attr = urlLink + '/' + old_attr;
                 }
             }
-            if (!old_attr.includes('en.wikipedia.org'))
-                console.log(old_attr);
             return 'http://dmhacker-proxy.herokuapp.com/site/' + old_attr;
         };
 
@@ -112,7 +110,8 @@ app.get('/site/*', function(req, res) {
                 }
                 res.status(200).send($.html());
             } else if (contentType.includes('css')) {
-                res.set(response.headers);
+                res.setHeader('content-type', 'text/css');
+
                 var ast = css.parse(body, {
                     silent: false
                 });
@@ -148,6 +147,7 @@ app.get('/site/*', function(req, res) {
                 res.status(200).send(css.stringify(ast).code);
             } else {
                 res.set(response.headers);
+
                 request({
                     url: urlLink,
                     headers: {
