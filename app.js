@@ -45,7 +45,7 @@ app.get('/site/*', function(req, res) {
 
         var transformLink = function(old_attr) {
             old_attr = old_attr === undefined ? undefined : old_attr.trim();
-            if (old_attr === undefined || old_attr[0] === '#') {
+            if (old_attr === undefined || old_attr[0] === '#' || old_attr.substring(0, 6) === 'data:') {
                 return old_attr;
             }
             else if (old_attr[0] === '/') {
