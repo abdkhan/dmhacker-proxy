@@ -145,8 +145,6 @@ app.get('/site/*', function(req, res) {
                                         }
                                         if (!extracted.startsWith('data:')) {
                                             level[k] = v.substring(0, start) + 'url(' + quotes + transformLink(extracted) + quotes + ')' + v.substring(end + 1);
-                                            console.log(v);
-                                            console.log(level[k]);
                                         }
                                     }
                                 }
@@ -157,6 +155,7 @@ app.get('/site/*', function(req, res) {
 
                 recurse(ast);
 
+                console.log(css.stringify(ast).code);
                 res.status(200).send(css.stringify(ast).code);
             } else {
                 res.set(response.headers);
