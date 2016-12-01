@@ -155,8 +155,7 @@ app.get('/site/*', function(req, res) {
 
                 recurse(ast);
 
-                console.log(css.stringify(ast).code);
-                res.status(200).send(css.stringify(ast).code);
+                res.status(200).send(css.stringify(ast));
             } else {
                 res.set(response.headers);
 
