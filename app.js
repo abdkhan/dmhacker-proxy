@@ -109,6 +109,7 @@ app.get('/site/*', function(req, res) {
                     });
                 }
                 res.status(200).send($.html());
+            /*
             } else if (contentType.includes('css')) {
                 res.setHeader('content-type', 'text/css');
 
@@ -145,6 +146,7 @@ app.get('/site/*', function(req, res) {
                 recurse(ast);
 
                 res.status(200).send(css.stringify(ast).code);
+            */
             } else {
                 res.set(response.headers);
 
