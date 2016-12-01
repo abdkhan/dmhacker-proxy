@@ -106,9 +106,10 @@ app.get('/site/*', function(req, res) {
                         }
                         var new_attr = transformLink(old_attr);
                         $(this).attr(target[1], new_attr);
+                        $(this).attr('integrity', '');
                     });
                 }
-                
+
                 res.status(200).send($.html());
             } else if (contentType.includes('css')) {
                 res.setHeader('Content-type', 'text/css');
