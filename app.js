@@ -134,6 +134,7 @@ app.get('/site/*', function(req, res) {
                                         extracted = extracted.substring(1, extracted.length - 1);
                                     }
                                     level[k] = 'url(' + quotes + transformLink(extracted) + quotes + ')';
+                                    console.log(transformLink(extracted));
                                 }
                             }
                         }
