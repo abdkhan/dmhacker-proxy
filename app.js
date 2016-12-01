@@ -31,7 +31,7 @@ app.get('/site/*', function(req, res) {
     // Format provided URL
     if (!urlLink.startsWith('http://') && !urlLink.startsWith('https://')) {
         if (urlLink.startsWith('//')) {
-            urlLink = 'https://' + urlLink.substring(2);
+            urlLink = 'http://' + urlLink.substring(2);
         }
         else {
             urlLink = 'http://' + urlLink;
@@ -43,7 +43,7 @@ app.get('/site/*', function(req, res) {
     urlLink = urlLink.split('https://wikipedia.org').join('https://en.wikipedia.org');
 
     var urlObject = require('url').parse(urlLink);
-    var urlHost = 'https://' + urlObject.hostname;
+    var urlHost = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname;
     request({
         url: urlLink,
         headers: {
@@ -58,7 +58,7 @@ app.get('/site/*', function(req, res) {
             }
             else if (old_attr[0] === '/') {
                 if (old_attr[1] === '/') {
-                    old_attr = 'https:' + old_attr;
+                    old_attr = 'http:' + old_attr;
                 }
                 else {
                     old_attr = urlHost + old_attr;
@@ -69,7 +69,7 @@ app.get('/site/*', function(req, res) {
                 // Nevertheless, we make our best guess
                 var first_part = old_attr.split('/')[0];
                 if (first_part.includes('.com') || first_part.includes('.org') || first_part.includes('.net') || first_part.includes('.edu')) {
-                    old_attr = 'https://' + old_attr;
+                    old_attr = urlObject.protocol + (urlObject.slashes ? '//' : '') + old_attr;
                 }
                 else {
                     old_attr = urlLink + '/' + old_attr;
