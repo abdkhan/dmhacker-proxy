@@ -24,8 +24,8 @@ app.get('/ip', function (req, res) {
 });
 
 // Where the magic happens
-app.get('/site/:b64url', function(req, res) {
-    var urlLink = new Buffer(req.params.b64url, 'base64').toString('ascii');
+app.get('/site/:raw', function(req, res) {
+    var urlLink = req.params.raw;
     if (!urlLink.startsWith('http://') && !urlLink.startsWith('https://')) {
         if (urlLink.startsWith('//')) {
             urlLink = 'http://' + urlLink.substring(2);
@@ -75,8 +75,7 @@ app.get('/site/:b64url', function(req, res) {
                             old_attr = urlLink + '/' + old_attr;
                         }
                     }
-                    var old_b64 = new Buffer(old_attr).toString('base64');
-                    return 'http://dmhacker-proxy.herokuapp.com/site/' + old_b64;
+                    return 'http://dmhacker-proxy.herokuapp.com/site/' + old_attr;
                 };
 
                 for (var t in targets) {

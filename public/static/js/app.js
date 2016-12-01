@@ -19,7 +19,6 @@ app.controller('ProxyController', function($scope, $http) {
     });
 
     $scope.go = function() {
-        var b64url = window.btoa($scope.url);
-        window.location.href = '/site/' + b64url;
+        window.location.href = '/site/' + $scope.url;
     };
 });
