@@ -35,7 +35,12 @@ app.get('/site/*', function(req, res) {
         }
     }
     var urlObject = require('url').parse(urlLink);
-    request(urlLink, function(err, response, body) {
+    request({
+        url: urlLink,
+        headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36'
+        }
+    }, function(err, response, body) {
         if (err) {
             res.status(400).send(err.message);
         } else {
@@ -104,7 +109,12 @@ app.get('/site/*', function(req, res) {
                 res.status(200).send($.html());
             } else {
                 res.set(response.headers);
-                request(urlLink).pipe(res);
+                request({
+                    url: urlLink,
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36'
+                    }
+                }).pipe(res);
             }
         }
     });

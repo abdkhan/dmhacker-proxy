@@ -12,7 +12,7 @@ app.controller('ProxyController', function($scope, $http) {
         }
     }, function(err) {
         Materialize.toast('Unable to get server ip', 3000);
-        $scope.title = 'Bush did 7/11.';
+        $scope.title = 'unknown';
         if (!$scope.$$phase) {
             $scope.$apply();
         }
