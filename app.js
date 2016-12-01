@@ -52,8 +52,8 @@ app.get('/site/*', function(req, res) {
                     ['a', 'href'],
                     ['script', 'src'],
                     ['img', 'src'],
-                    ['img', 'srcset']
-                    // ['form', 'action'] <-- No support for forms yet
+                    ['img', 'srcset'],
+                    ['form', 'action'] // Easy way of modifying forms; only works for search forms (not login, etc.)
                 ];
 
                 var transformLink = function(old_attr) {
