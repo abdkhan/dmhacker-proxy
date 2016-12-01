@@ -73,7 +73,6 @@ app.get('/site/*', function(req, res) {
         if (err) {
             res.status(400).send(err.message);
         } else {
-            res.set(response.headers);
             var contentType = response.headers['content-type'];
             if (contentType.includes('html')) {
                 var $ = cheerio.load(body);
@@ -109,12 +108,11 @@ app.get('/site/*', function(req, res) {
                         $(this).attr(target[1], new_attr);
                     });
                 }
-
-                // Prevent weird 'Refused to load ...' error
-                $('head').append("<meta http-equiv=\"Content-Security-Policy\" content=\"default-src *; style-src 'self' http://* 'unsafe-inline'; script-src 'self' http://* 'unsafe-inline' 'unsafe-eval'\" />");
-
+                
                 res.status(200).send($.html());
             } else if (contentType.includes('css')) {
+                res.setHeader('Content-type', 'text/css');
+
                 var ast = css.parse(body, {
                     silent: false
                 });
@@ -160,6 +158,7 @@ app.get('/site/*', function(req, res) {
 
                 res.status(200).send(css.stringify(ast));
             } else {
+                res.set(response.headers);
                 request({
                     url: urlLink,
                     headers: {
