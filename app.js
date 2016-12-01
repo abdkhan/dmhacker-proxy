@@ -67,7 +67,8 @@ app.get('/site/*', function(req, res) {
                     old_attr = urlLink + '/' + old_attr;
                 }
             }
-            console.log(old_attr);
+            if (!old_attr.includes('en.wikipedia.org'))
+                console.log(old_attr);
             return 'http://dmhacker-proxy.herokuapp.com/site/' + old_attr;
         };
 
