@@ -14,7 +14,8 @@
         "express": "4.13.3",
         "request": "2.79.0",
         "cheerio": "0.22.0",
-        "public-ip": "2.0.1"
+        "public-ip": "2.0.1",
+        "css": "2.2.1"
     },
     "repository": {
         "type": "git",

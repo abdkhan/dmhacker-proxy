@@ -1,6 +1,7 @@
 var express = require('express');
 var request = require('request');
 var cheerio = require('cheerio');
+var css = require('css');
 
 var app = express();
 
@@ -41,6 +42,34 @@ app.get('/site/*', function(req, res) {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36'
         }
     }, function(err, response, body) {
+
+        var transformLink = function(old_attr) {
+            old_attr = old_attr === undefined ? undefined : old_attr.trim();
+            if (old_attr === undefined || old_attr[0] === '#') {
+                return old_attr;
+            }
+            else if (old_attr[0] === '/') {
+                if (old_attr.substring(0, 2) === '//') {
+                    old_attr = 'http:' + old_attr;
+                }
+                else {
+                    old_attr = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname + (old_attr[0] === '/' ? '' : '/') + old_attr;
+                }
+            }
+            else if (old_attr.substring(0, 4) !== 'http') {
+                // We don't know what this is ... could be a link missing the http OR a call to the current directory
+                // Nevertheless, we make our best guess
+                var first_part = old_attr.split('/')[0];
+                if (first_part.includes('.com') || first_part.includes('.org') || first_part.includes('.net') || first_part.includes('.edu')) {
+                    old_attr = urlObject.protocol + (urlObject.slashes ? '//' : '') + old_attr;
+                }
+                else {
+                    old_attr = urlLink + '/' + old_attr;
+                }
+            }
+            return 'http://dmhacker-proxy.herokuapp.com/site/' + old_attr;
+        };
+
         if (err) {
             res.status(400).send(err.message);
         } else {
@@ -55,33 +84,6 @@ app.get('/site/*', function(req, res) {
                     ['img', 'srcset'],
                     ['form', 'action'] // Easy way of modifying forms; only works for search forms (not login, etc.)
                 ];
-
-                var transformLink = function(old_attr) {
-                    old_attr = old_attr === undefined ? undefined : old_attr.trim();
-                    if (old_attr === undefined || old_attr[0] === '#') {
-                        return old_attr;
-                    }
-                    else if (old_attr[0] === '/') {
-                        if (old_attr.substring(0, 2) === '//') {
-                            old_attr = 'http:' + old_attr;
-                        }
-                        else {
-                            old_attr = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname + (old_attr[0] === '/' ? '' : '/') + old_attr;
-                        }
-                    }
-                    else if (old_attr.substring(0, 4) !== 'http') {
-                        // We don't know what this is ... could be a link missing the http OR a call to the current directory
-                        // Nevertheless, we make our best guess
-                        var first_part = old_attr.split('/')[0];
-                        if (first_part.includes('.com') || first_part.includes('.org') || first_part.includes('.net') || first_part.includes('.edu')) {
-                            old_attr = urlObject.protocol + (urlObject.slashes ? '//' : '') + old_attr;
-                        }
-                        else {
-                            old_attr = urlLink + '/' + old_attr;
-                        }
-                    }
-                    return 'http://dmhacker-proxy.herokuapp.com/site/' + old_attr;
-                };
 
                 for (var t in targets) {
                     var target = targets[t];
@@ -107,6 +109,40 @@ app.get('/site/*', function(req, res) {
                     });
                 }
                 res.status(200).send($.html());
+            } else if (contentType.includes('css')) {
+                var ast = css.parse(body, {
+                    silent: false
+                });
+
+                var isObject = function(a) {
+                    return (!!a) && (a.constructor === Object);
+                };
+
+                var recurse = function (level) {
+                    for (var k in level) {
+                        if (Array.isArray(level) || level.hasOwnProperty(k)) {
+                            var v = level[k];
+                            if (Array.isArray(v) || isObject(v)) {
+                                recurse(v);
+                            }
+                            else if (typeof v === 'string') {
+                                if (v.trim().startsWith('url(')) {
+                                    var extracted = v.substring('url('.length, v.length - ')'.length);
+                                    var quotes = '';
+                                    if (extracted[0] === '"' || extracted[0] === "'") {
+                                        quotes = extracted[0];
+                                        extracted = extracted.substring(1, extracted.length - 1);
+                                    }
+                                    level[k] = 'url(' + quotes + transformLink(extracted) + quotes + ')';
+                                }
+                            }
+                        }
+                    }
+                };
+
+                recurse(ast);
+
+                res.status(200).send(css.stringify(ast).code);
             } else {
                 res.set(response.headers);
                 request({
