@@ -99,6 +99,8 @@ app.get('/site/*', function(req, res) {
                 var targets = [
                     ['link', 'href'],
                     ['a', 'href'],
+                    ['a', 'data-href-url'],
+                    ['a', 'data-outbound-url'],
                     ['script', 'src'],
                     ['img', 'src'],
                     ['img', 'srcset'],
