@@ -49,11 +49,12 @@ app.get('/site/*', function(req, res) {
                 return old_attr;
             }
             else if (old_attr[0] === '/') {
-                if (old_attr.substring(0, 2) === '//') {
+                if (old_attr[1] === '/') {
                     old_attr = 'http:' + old_attr;
                 }
                 else {
-                    old_attr = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname + (old_attr[0] === '/' ? '' : '/') + old_attr;
+                    old_attr = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname + old_attr;
+                    console.log(old_attr);
                 }
             }
             else if (old_attr.substring(0, 4) !== 'http') {
@@ -73,6 +74,7 @@ app.get('/site/*', function(req, res) {
         if (err) {
             res.status(400).send(err.message);
         } else {
+            res.set(response.headers);
             var contentType = response.headers['content-type'];
             if (contentType.includes('html')) {
                 var $ = cheerio.load(body);
@@ -134,7 +136,6 @@ app.get('/site/*', function(req, res) {
                                         extracted = extracted.substring(1, extracted.length - 1);
                                     }
                                     level[k] = 'url(' + quotes + transformLink(extracted) + quotes + ')';
-                                    console.log(transformLink(extracted));
                                 }
                             }
                         }
@@ -145,7 +146,6 @@ app.get('/site/*', function(req, res) {
 
                 res.status(200).send(css.stringify(ast).code);
             } else {
-                res.set(response.headers);
                 request({
                     url: urlLink,
                     headers: {
