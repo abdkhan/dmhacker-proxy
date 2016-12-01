@@ -68,9 +68,18 @@ app.get('/site/*', function(req, res) {
                     old_attr = urlLink + '/' + old_attr;
                 }
             }
-            if (!old_attr.startsWith(urlHost)) {
+
+            function isURL(str) {
+                var urlRegex = '^(?!mailto:)(?:(?:http|https|ftp)://)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$';
+                var url = new RegExp(urlRegex, 'i');
+                return str.length < 2083 && url.test(str);
+            }
+
+            // If not a url, do last minute fixes
+            if (!isUrl(old_attr)) {
                 old_attr = urlHost + ((urlHost[urlHost.length - 1] === '/' || old_attr[0] === '/') ? '' : '/') + old_attr;
             }
+
             return 'http://dmhacker-proxy.herokuapp.com/site/' + old_attr;
         };
 
