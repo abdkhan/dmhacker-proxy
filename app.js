@@ -54,7 +54,6 @@ app.get('/site/*', function(req, res) {
                 }
                 else {
                     old_attr = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname + old_attr;
-                    console.log(old_attr);
                 }
             }
             else if (old_attr.substring(0, 4) !== 'http') {
@@ -68,13 +67,13 @@ app.get('/site/*', function(req, res) {
                     old_attr = urlLink + '/' + old_attr;
                 }
             }
+            console.log(old_attr);
             return 'http://dmhacker-proxy.herokuapp.com/site/' + old_attr;
         };
 
         if (err) {
             res.status(400).send(err.message);
         } else {
-            res.set(response.headers);
             var contentType = response.headers['content-type'];
             if (contentType.includes('html')) {
                 var $ = cheerio.load(body);
@@ -112,6 +111,7 @@ app.get('/site/*', function(req, res) {
                 }
                 res.status(200).send($.html());
             } else if (contentType.includes('css')) {
+                res.set(response.headers);
                 var ast = css.parse(body, {
                     silent: false
                 });
@@ -146,6 +146,7 @@ app.get('/site/*', function(req, res) {
 
                 res.status(200).send(css.stringify(ast).code);
             } else {
+                res.set(response.headers);
                 request({
                     url: urlLink,
                     headers: {
