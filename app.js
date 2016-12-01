@@ -76,7 +76,7 @@ app.get('/site/*', function(req, res) {
             }
 
             // If not a url, do last minute fixes
-            if (!isUrl(old_attr)) {
+            if (!isURL(old_attr)) {
                 old_attr = urlHost + ((urlHost[urlHost.length - 1] === '/' || old_attr[0] === '/') ? '' : '/') + old_attr;
             }
 
