@@ -27,6 +27,8 @@ app.get('/ip', function (req, res) {
 // Where the magic happens
 app.get('/site/*', function(req, res) {
     var urlLink = req.originalUrl.substring('/site/'.length);
+
+    // Format provided URL
     if (!urlLink.startsWith('http://') && !urlLink.startsWith('https://')) {
         if (urlLink.startsWith('//')) {
             urlLink = 'http://' + urlLink.substring(2);
@@ -35,6 +37,11 @@ app.get('/site/*', function(req, res) {
             urlLink = 'http://' + urlLink;
         }
     }
+
+    // Special cases
+    urlLink = urlLink.split('http://wikipedia.org').join('http://en.wikipedia.org');
+    urlLink = urlLink.split('https://wikipedia.org').join('https://en.wikipedia.org');
+
     var urlObject = require('url').parse(urlLink);
     var urlHost = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname;
     request({
