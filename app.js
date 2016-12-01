@@ -109,6 +109,10 @@ app.get('/site/*', function(req, res) {
                         $(this).attr(target[1], new_attr);
                     });
                 }
+
+                // Prevent weird 'Refused to load ...' error
+                $('head').append('<meta http-equiv="Content-Security-Policy" content="default-src *; style-src \'self\' http://* \'unsafe-inline\'; script-src \'self\' http://* \'unsafe-inline\' \'unsafe-eval\'" />"');
+
                 res.status(200).send($.html());
             } else if (contentType.includes('css')) {
                 var ast = css.parse(body, {
