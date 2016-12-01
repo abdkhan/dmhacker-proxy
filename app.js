@@ -25,9 +25,7 @@ app.get('/ip', function (req, res) {
 
 // Where the magic happens
 app.get('/site/*', function(req, res) {
-    console.log(req.originalUrl);
-    console.log(req.path);
-    var urlLink = req.params.raw;
+    var urlLink = req.originalUrl.substring('/site/'.length);
     if (!urlLink.startsWith('http://') && !urlLink.startsWith('https://')) {
         if (urlLink.startsWith('//')) {
             urlLink = 'http://' + urlLink.substring(2);
