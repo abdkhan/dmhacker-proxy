@@ -34,6 +34,7 @@ app.get('/site/:raw', function(req, res) {
             urlLink = 'http://' + urlLink;
         }
     }
+    console.log(urlLink);
     var urlObject = require('url').parse(urlLink);
     request(urlLink, function(err, response, body) {
         if (err) {
