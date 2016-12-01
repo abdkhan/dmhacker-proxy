@@ -36,6 +36,7 @@ app.get('/site/*', function(req, res) {
         }
     }
     var urlObject = require('url').parse(urlLink);
+    var urlHost = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname;
     request({
         url: urlLink,
         headers: {
@@ -53,7 +54,7 @@ app.get('/site/*', function(req, res) {
                     old_attr = 'http:' + old_attr;
                 }
                 else {
-                    old_attr = urlObject.protocol + (urlObject.slashes ? '//' : '') + urlObject.hostname + old_attr;
+                    old_attr = urlHost + old_attr;
                 }
             }
             else if (old_attr.substring(0, 4) !== 'http') {
@@ -66,6 +67,9 @@ app.get('/site/*', function(req, res) {
                 else {
                     old_attr = urlLink + '/' + old_attr;
                 }
+            }
+            if (!old_attr.startsWith(urlHost)) {
+                old_attr = urlHost + ((urlHost[urlHost.length - 1] === '/' || old_attr[0] === '/') ? '' : '/') + old_attr;
             }
             return 'http://dmhacker-proxy.herokuapp.com/site/' + old_attr;
         };
